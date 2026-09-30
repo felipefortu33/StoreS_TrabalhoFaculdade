@@ -18,7 +18,7 @@
 - [ ] Remover credenciais de desenvolvimento dos scripts versionados.
 - [x] Armazenar senhas com hash seguro.
 - [x] Registrar compras, vendas e movimentacoes de estoque no banco.
-- [ ] Aplicar o nivel de acesso `ADMIN` ou `USER` nas operacoes.
+- [x] Aplicar o nivel de acesso `ADMIN` ou `USER` nas operacoes.
 - [ ] Adicionar constraints e indices necessarios ao banco.
 
 ## Fase 3 - Qualidade (prioridade media)

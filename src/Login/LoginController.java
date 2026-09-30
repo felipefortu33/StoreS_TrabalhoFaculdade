@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import BancoDeDados.DBConnection;
 
 public class LoginController {
-    public boolean autenticar(String nomeUsuario, String senha) {
-        String sql = "SELECT senha FROM usuarios WHERE nome_usuario = ?";
+    public Usuario autenticar(String nomeUsuario, String senha) {
+        String sql = "SELECT senha, nivel_acesso FROM usuarios WHERE nome_usuario = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -17,12 +17,14 @@ public class LoginController {
             stmt.setString(1, nomeUsuario);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return PasswordHasher.matches(senha, rs.getString("senha"));
+                    if (PasswordHasher.matches(senha, rs.getString("senha"))) {
+                        return new Usuario(nomeUsuario, rs.getString("nivel_acesso"));
+                    }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 }

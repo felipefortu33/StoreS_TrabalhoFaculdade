@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import Login.LoginController;
+import Login.Usuario;
 import produtos.Produto;
 import produtos.ProdutoDAO;
 import vendas.Venda;
@@ -22,13 +23,15 @@ public class Main {
         System.out.print("Digite sua senha: ");
         String senha = scanner.nextLine();
 
-        boolean autenticado = loginController.autenticar(usuario, senha);
+        Usuario usuarioAutenticado = loginController.autenticar(usuario, senha);
 
-        if (!autenticado) {
+        if (usuarioAutenticado == null) {
             System.out.println("Falha no login. Encerrando o programa.");
             scanner.close();
             return;
         }
+
+        System.out.println("Login realizado como " + usuarioAutenticado.getNivelAcesso() + ".");
 
         // Menu de opções
         int opcao = 0;
@@ -46,6 +49,10 @@ public class Main {
             switch (opcao) {
                 case 1:
                     // Cadastro de Produto Manualmente
+                    if (!usuarioAutenticado.isAdmin()) {
+                        System.out.println("Acesso permitido somente para administradores.");
+                        break;
+                    }
                     String nomeProduto = lerTexto(scanner, "Nome do produto: ");
                     double preco = lerDouble(scanner, "Preço do produto: ", 0.01);
                     int quantidade = lerInteiro(scanner, "Quantidade do produto: ", 0);
@@ -74,6 +81,10 @@ public class Main {
 
                 case 3:
                     // Edição de Produto
+                    if (!usuarioAutenticado.isAdmin()) {
+                        System.out.println("Acesso permitido somente para administradores.");
+                        break;
+                    }
                     int idEditar = lerInteiro(scanner, "Digite o ID do produto a ser editado: ", 1);
                     String novoNome = lerTexto(scanner, "Novo nome do produto: ");
                     double novoPreco = lerDouble(scanner, "Novo preço do produto: ", 0.01);
@@ -86,6 +97,10 @@ public class Main {
 
                 case 4:
                     // Remoção de Produto
+                    if (!usuarioAutenticado.isAdmin()) {
+                        System.out.println("Acesso permitido somente para administradores.");
+                        break;
+                    }
                     int idRemover = lerInteiro(scanner, "Digite o ID do produto a ser removido: ", 1);
                     produtoDAO.removerProduto(idRemover);
                     break;
