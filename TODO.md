@@ -26,6 +26,7 @@
 - [ ] Separar menu, servicos de negocio, DAOs e validacoes.
 - [ ] Usar `BigDecimal` para valores monetarios.
 - [ ] Adicionar testes para login, estoque, compras e vendas.
+- [x] Adicionar testes unitarios para o hash de senha.
 - [ ] Padronizar tratamento de erros e mensagens para o usuario.
 - [ ] Adicionar codigo/SKU, categoria e estoque minimo aos produtos.
 
