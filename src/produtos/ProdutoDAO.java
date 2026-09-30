@@ -149,41 +149,108 @@ public class ProdutoDAO {
     }
 
     // Método para atualizar o estoque após uma venda
-    public boolean atualizarEstoqueAposVenda(int id, int quantidadeVendida) {
+    public boolean atualizarEstoqueAposVenda(int id, int quantidadeVendida, double precoUnitario) {
         String sql = "UPDATE produtos SET quantidade = quantidade - ? "
                    + "WHERE id = ? AND quantidade >= ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            conn.setAutoCommit(false);
 
             stmt.setInt(1, quantidadeVendida);
             stmt.setInt(2, id);
             stmt.setInt(3, quantidadeVendida);
 
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            if (rowsAffected == 0) {
+                conn.rollback();
+                return false;
+            }
+
+            registrarMovimentacao(conn, id, "VENDA", quantidadeVendida,
+                precoUnitario, precoUnitario * quantidadeVendida);
+            conn.commit();
+            return true;
+            }
 
         } catch (SQLException e) {
+            rollback(conn);
             e.printStackTrace();
             return false;
+        } finally {
+            close(conn);
         }
     }
 
     public boolean atualizarEstoqueAposCompra(int id, double novoPreco, int quantidadeComprada) {
         String sql = "UPDATE produtos SET preco = ?, quantidade = quantidade + ? WHERE id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            conn.setAutoCommit(false);
 
             stmt.setDouble(1, novoPreco);
             stmt.setInt(2, quantidadeComprada);
             stmt.setInt(3, id);
 
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            if (rowsAffected == 0) {
+                conn.rollback();
+                return false;
+            }
+
+            registrarMovimentacao(conn, id, "COMPRA", quantidadeComprada,
+                novoPreco, novoPreco * quantidadeComprada);
+            conn.commit();
+            return true;
+            }
         } catch (SQLException e) {
+            rollback(conn);
             e.printStackTrace();
             return false;
+        } finally {
+            close(conn);
+        }
+    }
+
+    private void rollback(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.rollback();
+            } catch (SQLException ignored) {
+                // Mantem o erro original da operacao.
+            }
+        }
+    }
+
+    private void close(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException ignored) {
+                // A operacao ja foi concluida ou desfeita.
+            }
+        }
+    }
+
+    private void registrarMovimentacao(Connection conn, int produtoId, String tipo,
+                                       int quantidade, double precoUnitario,
+                                       double valorTotal) throws SQLException {
+        String sql = "INSERT INTO movimentacoes_estoque "
+                   + "(produto_id, tipo, quantidade, preco_unitario, valor_total) "
+                   + "VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, produtoId);
+            stmt.setString(2, tipo);
+            stmt.setInt(3, quantidade);
+            stmt.setDouble(4, precoUnitario);
+            stmt.setDouble(5, valorTotal);
+            stmt.executeUpdate();
         }
     }
 }

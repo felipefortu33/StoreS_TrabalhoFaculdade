@@ -11,13 +11,13 @@
 - [x] Fazer as operacoes de estoque retornarem sucesso ou erro.
 - [x] Corrigir compras para aumentar o estoque do produto existente, sem criar duplicatas.
 - [x] Garantir que vendas nunca reduzam o estoque abaixo de zero.
-- [ ] Usar transacoes nas operacoes de compra e venda.
+- [x] Usar transacoes nas operacoes de compra e venda.
 
 ## Fase 2 - Dados e seguranca (prioridade alta)
 
 - [ ] Remover credenciais de desenvolvimento dos scripts versionados.
 - [x] Armazenar senhas com hash seguro.
-- [ ] Registrar compras, vendas e movimentacoes de estoque no banco.
+- [x] Registrar compras, vendas e movimentacoes de estoque no banco.
 - [ ] Aplicar o nivel de acesso `ADMIN` ou `USER` nas operacoes.
 - [ ] Adicionar constraints e indices necessarios ao banco.
 

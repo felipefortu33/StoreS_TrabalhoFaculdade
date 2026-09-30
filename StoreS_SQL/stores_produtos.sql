@@ -31,6 +31,21 @@ CREATE TABLE `produtos` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+DROP TABLE IF EXISTS `movimentacoes_estoque`;
+CREATE TABLE `movimentacoes_estoque` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `produto_id` int NOT NULL,
+  `tipo` enum('COMPRA','VENDA') NOT NULL,
+  `quantidade` int NOT NULL,
+  `preco_unitario` decimal(10,2) NOT NULL,
+  `valor_total` decimal(10,2) NOT NULL,
+  `criado_em` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_movimentacoes_produto_data` (`produto_id`, `criado_em`),
+  CONSTRAINT `fk_movimentacoes_produto` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`),
+  CONSTRAINT `chk_movimentacoes_quantidade` CHECK (`quantidade` > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 --
 -- Dumping data for table `produtos`
 --

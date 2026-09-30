@@ -135,7 +135,7 @@ public class Main {
 
                     // Atualiza o estoque após a venda
                     boolean estoqueAtualizado = produtoDAO.atualizarEstoqueAposVenda(
-                        produtoParaVenda.getId(), quantidadeVenda);
+                        produtoParaVenda.getId(), quantidadeVenda, produtoParaVenda.getPreco());
 
                     if (!estoqueAtualizado) {
                         System.out.println("Não foi possível atualizar o estoque. Tente novamente.");
