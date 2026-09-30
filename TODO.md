@@ -4,6 +4,7 @@
 
 - [x] Alinhar o nome do banco usado pela aplicacao com os scripts SQL (`stores`).
 - [x] Permitir configuracao da conexao por propriedades Java ou variaveis de ambiente.
+- [x] Remover a senha padrao do banco do codigo-fonte.
 - [x] Criar um build reproduzivel com Maven e declarar o MySQL Connector.
 - [x] Documentar a execucao real do projeto no README.
 - [x] Validar entradas do menu, precos, quantidades, nomes e IDs.

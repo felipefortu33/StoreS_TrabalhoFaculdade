@@ -54,9 +54,10 @@ mvn exec:java
 ```
 
 Antes de executar, crie o banco `stores` e importe os scripts em `StoreS_SQL/`.
-O acesso pode ser configurado pelas variaveis `STORES_DB_URL`, `STORES_DB_USER` e
-`STORES_DB_PASSWORD`, ou pelas propriedades Java `stores.db.url`, `stores.db.user`
-e `stores.db.password`.
+O acesso deve ser configurado pelas variaveis `STORES_DB_USER` e
+`STORES_DB_PASSWORD`. Tambem e possivel substituir a URL padrao pelas variaveis
+`STORES_DB_URL` ou pelas propriedades Java `stores.db.url`, `stores.db.user` e
+`stores.db.password`.
 
 ---
 
