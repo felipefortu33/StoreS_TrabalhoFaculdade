@@ -1,12 +1,14 @@
 package produtos;
 
+import java.math.BigDecimal;
+
 public class Produto {
     private int id;
     private String nome;
-    private double preco;
+    private BigDecimal preco;
     private int quantidade;
 
-    public Produto(String nome, double preco, int quantidade) {
+    public Produto(String nome, BigDecimal preco, int quantidade) {
         this.nome = nome;
         this.preco = preco;
         this.quantidade = quantidade;
@@ -20,7 +22,7 @@ public class Produto {
         return nome;
     }
 
-    public double getPreco() {
+    public BigDecimal getPreco() {
         return preco;
     }
 
@@ -36,7 +38,7 @@ public class Produto {
         this.nome = nome;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(BigDecimal preco) {
         this.preco = preco;
     }
 

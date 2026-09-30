@@ -1,14 +1,16 @@
 package vendas;
 
+import java.math.BigDecimal;
+
 import produtos.Produto;
 
 public class Venda {
     private Produto produto;
     private int quantidadeVendida;
-    private double valorTotal;
+    private BigDecimal valorTotal;
 
     // Construtor
-    public Venda(Produto produto, int quantidadeVendida, double valorTotal) {
+    public Venda(Produto produto, int quantidadeVendida, BigDecimal valorTotal) {
         this.produto = produto;
         this.quantidadeVendida = quantidadeVendida;
         this.valorTotal = valorTotal;
@@ -23,7 +25,7 @@ public class Venda {
         return quantidadeVendida;
     }
 
-    public double getValorTotal() {
+    public BigDecimal getValorTotal() {
         return valorTotal;
     }
 }

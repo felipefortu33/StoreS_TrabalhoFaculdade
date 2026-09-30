@@ -1,5 +1,7 @@
 package main;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Scanner;
 
@@ -54,7 +56,7 @@ public class Main {
                         break;
                     }
                     String nomeProduto = lerTexto(scanner, "Nome do produto: ");
-                    double preco = lerDouble(scanner, "Preço do produto: ", 0.01);
+                    BigDecimal preco = lerDecimal(scanner, "Preço do produto: ", BigDecimal.valueOf(0.01));
                     int quantidade = lerInteiro(scanner, "Quantidade do produto: ", 0);
 
                     Produto produto = new Produto(nomeProduto, preco, quantidade);
@@ -87,7 +89,7 @@ public class Main {
                     }
                     int idEditar = lerInteiro(scanner, "Digite o ID do produto a ser editado: ", 1);
                     String novoNome = lerTexto(scanner, "Novo nome do produto: ");
-                    double novoPreco = lerDouble(scanner, "Novo preço do produto: ", 0.01);
+                    BigDecimal novoPreco = lerDecimal(scanner, "Novo preço do produto: ", BigDecimal.valueOf(0.01));
                     int novaQuantidade = lerInteiro(scanner, "Nova quantidade do produto: ", 0);
 
                     Produto produtoEditado = new Produto(novoNome, novoPreco, novaQuantidade);
@@ -116,10 +118,13 @@ public class Main {
                     }
 
                     int quantidadeCompra = lerInteiro(scanner, "Quantidade a ser comprada: ", 1);
-                    double porcentagemLucro = lerDouble(scanner, "Porcentagem de lucro: ", 0);
+                    BigDecimal porcentagemLucro = lerDecimal(scanner,
+                        "Porcentagem de lucro: ", BigDecimal.ZERO);
 
-                    double precoCompra = produtoParaCompra.getPreco();
-                    double precoVenda = precoCompra * (1 + porcentagemLucro / 100);
+                    BigDecimal fatorLucro = BigDecimal.ONE.add(
+                        porcentagemLucro.divide(BigDecimal.valueOf(100), 8, RoundingMode.HALF_UP));
+                    BigDecimal precoVenda = produtoParaCompra.getPreco()
+                        .multiply(fatorLucro).setScale(2, RoundingMode.HALF_UP);
 
                     boolean compraAtualizada = produtoDAO.atualizarEstoqueAposCompra(
                         produtoParaCompra.getId(), precoVenda, quantidadeCompra);
@@ -145,7 +150,8 @@ public class Main {
                         break;
                     }
 
-                    double valorVenda = produtoParaVenda.getPreco() * quantidadeVenda;
+                    BigDecimal valorVenda = produtoParaVenda.getPreco()
+                        .multiply(BigDecimal.valueOf(quantidadeVenda));
                     Venda venda = new Venda(produtoParaVenda, quantidadeVenda, valorVenda);
 
                     // Atualiza o estoque após a venda
@@ -203,13 +209,13 @@ public class Main {
         }
     }
 
-    private static double lerDouble(Scanner scanner, String mensagem, double minimo) {
+    private static BigDecimal lerDecimal(Scanner scanner, String mensagem, BigDecimal minimo) {
         while (true) {
             System.out.print(mensagem);
             String entrada = scanner.nextLine().trim().replace(',', '.');
             try {
-                double valor = Double.parseDouble(entrada);
-                if (Double.isFinite(valor) && valor >= minimo) {
+                BigDecimal valor = new BigDecimal(entrada);
+                if (valor.compareTo(minimo) >= 0) {
                     return valor;
                 }
             } catch (NumberFormatException ignored) {

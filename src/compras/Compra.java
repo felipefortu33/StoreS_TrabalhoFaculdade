@@ -1,27 +1,32 @@
 package compras;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import produtos.Produto;
 
 public class Compra {
 
     private Produto produto;
     private int quantidade;
-    private double margemGanho; // Percentual de ganho aplicado ao preço do produto
+    private BigDecimal margemGanho; // Percentual de ganho aplicado ao preço do produto
 
-    public Compra(Produto produto, int quantidade, double margemGanho) {
+    public Compra(Produto produto, int quantidade, BigDecimal margemGanho) {
         this.produto = produto;
         this.quantidade = quantidade;
         this.margemGanho = margemGanho;
     }
 
     // Método para calcular o preço do produto com a margem de ganho aplicada
-    public double calcularPrecoComGanho() {
-        return produto.getPreco() * (1 + margemGanho / 100); // Aplica a porcentagem sobre o preço original
+    public BigDecimal calcularPrecoComGanho() {
+        BigDecimal fatorGanho = BigDecimal.ONE.add(
+            margemGanho.divide(BigDecimal.valueOf(100), 8, RoundingMode.HALF_UP));
+        return produto.getPreco().multiply(fatorGanho).setScale(2, RoundingMode.HALF_UP);
     }
 
     // Método para calcular o valor total da compra
-    public double calcularTotal() {
-        return calcularPrecoComGanho() * quantidade;
+    public BigDecimal calcularTotal() {
+        return calcularPrecoComGanho().multiply(BigDecimal.valueOf(quantidade));
     }
 
     // Getters e Setters
@@ -41,11 +46,11 @@ public class Compra {
         this.quantidade = quantidade;
     }
 
-    public double getMargemGanho() {
+    public BigDecimal getMargemGanho() {
         return margemGanho;
     }
 
-    public void setMargemGanho(double margemGanho) {
+    public void setMargemGanho(BigDecimal margemGanho) {
         this.margemGanho = margemGanho;
     }
 

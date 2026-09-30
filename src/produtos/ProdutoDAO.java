@@ -1,5 +1,7 @@
 package produtos;
 
+import java.math.BigDecimal;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +21,7 @@ public class ProdutoDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, produto.getNome());
-            stmt.setDouble(2, produto.getPreco());
+            stmt.setBigDecimal(2, produto.getPreco());
             stmt.setInt(3, produto.getQuantidade());
 
             stmt.executeUpdate();
@@ -41,7 +43,7 @@ public class ProdutoDAO {
             while (rs.next()) {
                 Produto produto = new Produto(
                     rs.getString("nome_produto"),
-                    rs.getDouble("preco"),
+                    rs.getBigDecimal("preco"),
                     rs.getInt("quantidade")
                 );
                 produto.setId(rs.getInt("id"));
@@ -61,7 +63,7 @@ public class ProdutoDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, produto.getNome());
-            stmt.setDouble(2, produto.getPreco());
+            stmt.setBigDecimal(2, produto.getPreco());
             stmt.setInt(3, produto.getQuantidade());
             stmt.setInt(4, produto.getId());
 
@@ -111,7 +113,7 @@ public class ProdutoDAO {
                 if (rs.next()) {
                     produto = new Produto(
                         rs.getString("nome_produto"),
-                        rs.getDouble("preco"),
+                        rs.getBigDecimal("preco"),
                         rs.getInt("quantidade")
                     );
                     produto.setId(rs.getInt("id"));
@@ -136,7 +138,7 @@ public class ProdutoDAO {
                 if (rs.next()) {
                     produto = new Produto(
                         rs.getString("nome_produto"),
-                        rs.getDouble("preco"),
+                        rs.getBigDecimal("preco"),
                         rs.getInt("quantidade")
                     );
                     produto.setId(rs.getInt("id"));
@@ -149,7 +151,7 @@ public class ProdutoDAO {
     }
 
     // Método para atualizar o estoque após uma venda
-    public boolean atualizarEstoqueAposVenda(int id, int quantidadeVendida, double precoUnitario) {
+    public boolean atualizarEstoqueAposVenda(int id, int quantidadeVendida, BigDecimal precoUnitario) {
         String sql = "UPDATE produtos SET quantidade = quantidade - ? "
                    + "WHERE id = ? AND quantidade >= ?";
 
@@ -170,7 +172,7 @@ public class ProdutoDAO {
             }
 
             registrarMovimentacao(conn, id, "VENDA", quantidadeVendida,
-                precoUnitario, precoUnitario * quantidadeVendida);
+                precoUnitario, precoUnitario.multiply(BigDecimal.valueOf(quantidadeVendida)));
             conn.commit();
             return true;
             }
@@ -184,7 +186,7 @@ public class ProdutoDAO {
         }
     }
 
-    public boolean atualizarEstoqueAposCompra(int id, double novoPreco, int quantidadeComprada) {
+    public boolean atualizarEstoqueAposCompra(int id, BigDecimal novoPreco, int quantidadeComprada) {
         String sql = "UPDATE produtos SET preco = ?, quantidade = quantidade + ? WHERE id = ?";
 
         Connection conn = null;
@@ -193,7 +195,7 @@ public class ProdutoDAO {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             conn.setAutoCommit(false);
 
-            stmt.setDouble(1, novoPreco);
+            stmt.setBigDecimal(1, novoPreco);
             stmt.setInt(2, quantidadeComprada);
             stmt.setInt(3, id);
 
@@ -204,7 +206,7 @@ public class ProdutoDAO {
             }
 
             registrarMovimentacao(conn, id, "COMPRA", quantidadeComprada,
-                novoPreco, novoPreco * quantidadeComprada);
+                novoPreco, novoPreco.multiply(BigDecimal.valueOf(quantidadeComprada)));
             conn.commit();
             return true;
             }
@@ -238,8 +240,8 @@ public class ProdutoDAO {
     }
 
     private void registrarMovimentacao(Connection conn, int produtoId, String tipo,
-                                       int quantidade, double precoUnitario,
-                                       double valorTotal) throws SQLException {
+                                       int quantidade, BigDecimal precoUnitario,
+                                       BigDecimal valorTotal) throws SQLException {
         String sql = "INSERT INTO movimentacoes_estoque "
                    + "(produto_id, tipo, quantidade, preco_unitario, valor_total) "
                    + "VALUES (?, ?, ?, ?, ?)";
@@ -248,8 +250,8 @@ public class ProdutoDAO {
             stmt.setInt(1, produtoId);
             stmt.setString(2, tipo);
             stmt.setInt(3, quantidade);
-            stmt.setDouble(4, precoUnitario);
-            stmt.setDouble(5, valorTotal);
+            stmt.setBigDecimal(4, precoUnitario);
+            stmt.setBigDecimal(5, valorTotal);
             stmt.executeUpdate();
         }
     }
