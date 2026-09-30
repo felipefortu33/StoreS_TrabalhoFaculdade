@@ -1,7 +1,6 @@
 package main;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,6 +8,7 @@ import Login.LoginController;
 import Login.Usuario;
 import produtos.Produto;
 import produtos.ProdutoDAO;
+import servicos.EstoqueService;
 import vendas.Venda;
 
 public class Main {
@@ -16,6 +16,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ProdutoDAO produtoDAO = new ProdutoDAO();
+        EstoqueService estoqueService = new EstoqueService(produtoDAO);
         LoginController loginController = new LoginController();
 
         // Sistema de Login
@@ -121,14 +122,9 @@ public class Main {
                     BigDecimal porcentagemLucro = lerDecimal(scanner,
                         "Porcentagem de lucro: ", BigDecimal.ZERO);
 
-                    BigDecimal fatorLucro = BigDecimal.ONE.add(
-                        porcentagemLucro.divide(BigDecimal.valueOf(100), 8, RoundingMode.HALF_UP));
-                    BigDecimal precoVenda = produtoParaCompra.getPreco()
-                        .multiply(fatorLucro).setScale(2, RoundingMode.HALF_UP);
-
-                    boolean compraAtualizada = produtoDAO.atualizarEstoqueAposCompra(
-                        produtoParaCompra.getId(), precoVenda, quantidadeCompra);
-                    System.out.println(compraAtualizada
+                    boolean compraRegistrada = estoqueService.registrarCompra(
+                        produtoParaCompra, quantidadeCompra, porcentagemLucro);
+                    System.out.println(compraRegistrada
                         ? "Compra registrada com sucesso!"
                         : "Não foi possível registrar a compra.");
                     break;
@@ -145,21 +141,10 @@ public class Main {
 
                     int quantidadeVenda = lerInteiro(scanner, "Quantidade a ser vendida: ", 1);
 
-                    if (quantidadeVenda > produtoParaVenda.getQuantidade()) {
-                        System.out.println("Quantidade vendida excede a quantidade em estoque.");
-                        break;
-                    }
-
-                    BigDecimal valorVenda = produtoParaVenda.getPreco()
-                        .multiply(BigDecimal.valueOf(quantidadeVenda));
-                    Venda venda = new Venda(produtoParaVenda, quantidadeVenda, valorVenda);
-
-                    // Atualiza o estoque após a venda
-                    boolean estoqueAtualizado = produtoDAO.atualizarEstoqueAposVenda(
-                        produtoParaVenda.getId(), quantidadeVenda, produtoParaVenda.getPreco());
-
-                    if (!estoqueAtualizado) {
-                        System.out.println("Não foi possível atualizar o estoque. Tente novamente.");
+                    Venda venda = estoqueService.registrarVenda(produtoParaVenda, quantidadeVenda);
+                    if (venda == null) {
+                        System.out.println("Não foi possível realizar a venda. "
+                            + "Verifique o estoque e tente novamente.");
                         break;
                     }
 

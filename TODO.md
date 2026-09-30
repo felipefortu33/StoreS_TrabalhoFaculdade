@@ -23,7 +23,7 @@
 
 ## Fase 3 - Qualidade (prioridade media)
 
-- [ ] Separar menu, servicos de negocio, DAOs e validacoes.
+- [x] Separar menu, servicos de negocio, DAOs e validacoes.
 - [x] Usar `BigDecimal` para valores monetarios.
 - [ ] Adicionar testes para login, estoque, compras e vendas.
 - [x] Adicionar testes unitarios para o hash de senha.
