@@ -1,6 +1,18 @@
+# Artefatos de build
+*.jar
+*.war
+*.class
+bin/
 target/
+build/
+out/
+
+# Eclipse
+.settings/
 .classpath
 .project
-.settings/
-*.class
-*.jar
+.metadata/
+
+# Sistema
+.DS_Store
+Thumbs.db
