@@ -41,21 +41,14 @@ public class Main {
             System.out.println("5. Comprar de Fornecedor");
             System.out.println("6. Realizar Venda");
             System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
-            scanner.nextLine(); // Limpa o buffer
+            opcao = lerInteiro(scanner, "Escolha uma opção: ", 0);
 
             switch (opcao) {
                 case 1:
                     // Cadastro de Produto Manualmente
-                    System.out.print("Nome do produto: ");
-                    String nomeProduto = scanner.nextLine();
-
-                    System.out.print("Preço do produto: ");
-                    double preco = scanner.nextDouble();
-
-                    System.out.print("Quantidade do produto: ");
-                    int quantidade = scanner.nextInt();
+                    String nomeProduto = lerTexto(scanner, "Nome do produto: ");
+                    double preco = lerDouble(scanner, "Preço do produto: ", 0.01);
+                    int quantidade = lerInteiro(scanner, "Quantidade do produto: ", 0);
 
                     Produto produto = new Produto(nomeProduto, preco, quantidade);
                     produtoDAO.cadastrarProduto(produto);
@@ -81,18 +74,10 @@ public class Main {
 
                 case 3:
                     // Edição de Produto
-                    System.out.print("Digite o ID do produto a ser editado: ");
-                    int idEditar = scanner.nextInt();
-                    scanner.nextLine(); // Limpa o buffer
-
-                    System.out.print("Novo nome do produto: ");
-                    String novoNome = scanner.nextLine();
-
-                    System.out.print("Novo preço do produto: ");
-                    double novoPreco = scanner.nextDouble();
-
-                    System.out.print("Nova quantidade do produto: ");
-                    int novaQuantidade = scanner.nextInt();
+                    int idEditar = lerInteiro(scanner, "Digite o ID do produto a ser editado: ", 1);
+                    String novoNome = lerTexto(scanner, "Novo nome do produto: ");
+                    double novoPreco = lerDouble(scanner, "Novo preço do produto: ", 0.01);
+                    int novaQuantidade = lerInteiro(scanner, "Nova quantidade do produto: ", 0);
 
                     Produto produtoEditado = new Produto(novoNome, novoPreco, novaQuantidade);
                     produtoEditado.setId(idEditar);
@@ -101,16 +86,13 @@ public class Main {
 
                 case 4:
                     // Remoção de Produto
-                    System.out.print("Digite o ID do produto a ser removido: ");
-                    int idRemover = scanner.nextInt();
+                    int idRemover = lerInteiro(scanner, "Digite o ID do produto a ser removido: ", 1);
                     produtoDAO.removerProduto(idRemover);
                     break;
 
                 case 5:
                     // Compra de Produtos
-                    System.out.print("Nome do produto para compra: ");
-                    String nomeProdutoCompra = scanner.nextLine();
-                    
+                    String nomeProdutoCompra = lerTexto(scanner, "Nome do produto para compra: ");
                     Produto produtoParaCompra = produtoDAO.buscarProdutoPorNome(nomeProdutoCompra);
 
                     if (produtoParaCompra == null) {
@@ -118,27 +100,22 @@ public class Main {
                         break;
                     }
 
-                    System.out.print("Quantidade a ser comprada: ");
-                    int quantidadeCompra = scanner.nextInt();
-
-                    System.out.print("Porcentagem de lucro: ");
-                    double porcentagemLucro = scanner.nextDouble();
+                    int quantidadeCompra = lerInteiro(scanner, "Quantidade a ser comprada: ", 1);
+                    double porcentagemLucro = lerDouble(scanner, "Porcentagem de lucro: ", 0);
 
                     double precoCompra = produtoParaCompra.getPreco();
                     double precoVenda = precoCompra * (1 + porcentagemLucro / 100);
 
-                    // Cria um novo produto para a lista com o preço atualizado
-                    Produto produtoParaCadastro = new Produto(nomeProdutoCompra, precoVenda, quantidadeCompra);
-                    produtoDAO.cadastrarProduto(produtoParaCadastro);
-
-                    System.out.println("Compra registrada com sucesso!");
+                    boolean compraAtualizada = produtoDAO.atualizarEstoqueAposCompra(
+                        produtoParaCompra.getId(), precoVenda, quantidadeCompra);
+                    System.out.println(compraAtualizada
+                        ? "Compra registrada com sucesso!"
+                        : "Não foi possível registrar a compra.");
                     break;
 
                 case 6:
                     // Venda de Produtos
-                    System.out.print("Nome do produto a ser vendido: ");
-                    String nomeProdutoVenda = scanner.nextLine();
-
+                    String nomeProdutoVenda = lerTexto(scanner, "Nome do produto a ser vendido: ");
                     Produto produtoParaVenda = produtoDAO.buscarProdutoPorNome(nomeProdutoVenda);
 
                     if (produtoParaVenda == null) {
@@ -146,9 +123,7 @@ public class Main {
                         break;
                     }
 
-                    System.out.print("Quantidade a ser vendida: ");
-                    int quantidadeVenda = scanner.nextInt();
-                    scanner.nextLine(); // Limpa o buffer
+                    int quantidadeVenda = lerInteiro(scanner, "Quantidade a ser vendida: ", 1);
 
                     if (quantidadeVenda > produtoParaVenda.getQuantidade()) {
                         System.out.println("Quantidade vendida excede a quantidade em estoque.");
@@ -159,7 +134,13 @@ public class Main {
                     Venda venda = new Venda(produtoParaVenda, quantidadeVenda, valorVenda);
 
                     // Atualiza o estoque após a venda
-                    produtoDAO.atualizarEstoqueAposVenda(produtoParaVenda.getId(), quantidadeVenda);
+                    boolean estoqueAtualizado = produtoDAO.atualizarEstoqueAposVenda(
+                        produtoParaVenda.getId(), quantidadeVenda);
+
+                    if (!estoqueAtualizado) {
+                        System.out.println("Não foi possível atualizar o estoque. Tente novamente.");
+                        break;
+                    }
 
                     System.out.println("Venda registrada com sucesso!");
                     System.out.println("Produto: " + venda.getProduto().getNome());
@@ -178,5 +159,48 @@ public class Main {
         } while (opcao != 0);
 
         scanner.close();
+    }
+
+    private static String lerTexto(Scanner scanner, String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            String valor = scanner.nextLine().trim();
+            if (!valor.isEmpty()) {
+                return valor;
+            }
+            System.out.println("O valor não pode ficar vazio.");
+        }
+    }
+
+    private static int lerInteiro(Scanner scanner, String mensagem, int minimo) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = scanner.nextLine().trim();
+            try {
+                int valor = Integer.parseInt(entrada);
+                if (valor >= minimo) {
+                    return valor;
+                }
+            } catch (NumberFormatException ignored) {
+                // Solicita novamente uma entrada numerica valida.
+            }
+            System.out.println("Digite um numero inteiro maior ou igual a " + minimo + ".");
+        }
+    }
+
+    private static double lerDouble(Scanner scanner, String mensagem, double minimo) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = scanner.nextLine().trim().replace(',', '.');
+            try {
+                double valor = Double.parseDouble(entrada);
+                if (Double.isFinite(valor) && valor >= minimo) {
+                    return valor;
+                }
+            } catch (NumberFormatException ignored) {
+                // Solicita novamente uma entrada numerica valida.
+            }
+            System.out.println("Digite um numero maior ou igual a " + minimo + ".");
+        }
     }
 }

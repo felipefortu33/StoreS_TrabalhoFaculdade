@@ -149,24 +149,41 @@ public class ProdutoDAO {
     }
 
     // Método para atualizar o estoque após uma venda
-    public void atualizarEstoqueAposVenda(int id, int quantidadeVendida) {
-        String sql = "UPDATE produtos SET quantidade = quantidade - ? WHERE id = ?";
+    public boolean atualizarEstoqueAposVenda(int id, int quantidadeVendida) {
+        String sql = "UPDATE produtos SET quantidade = quantidade - ? "
+                   + "WHERE id = ? AND quantidade >= ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, quantidadeVendida);
             stmt.setInt(2, id);
+            stmt.setInt(3, quantidadeVendida);
 
             int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Estoque atualizado com sucesso!");
-            } else {
-                System.out.println("Produto não encontrado para atualizar o estoque.");
-            }
+            return rowsAffected > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean atualizarEstoqueAposCompra(int id, double novoPreco, int quantidadeComprada) {
+        String sql = "UPDATE produtos SET preco = ?, quantidade = quantidade + ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDouble(1, novoPreco);
+            stmt.setInt(2, quantidadeComprada);
+            stmt.setInt(3, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
