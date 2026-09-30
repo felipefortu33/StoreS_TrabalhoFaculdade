@@ -4,12 +4,12 @@
 
 - [x] Alinhar o nome do banco usado pela aplicacao com os scripts SQL (`stores`).
 - [x] Permitir configuracao da conexao por propriedades Java ou variaveis de ambiente.
-- [ ] Criar um build reproduzivel com Maven ou Gradle e declarar o MySQL Connector.
-- [ ] Documentar a execucao real do projeto no README.
-- [ ] Validar entradas do menu, precos, quantidades, nomes e IDs.
-- [ ] Fazer os metodos de persistencia retornarem sucesso ou erro em vez de apenas imprimirem mensagens.
-- [ ] Corrigir compras para aumentar o estoque do produto existente, sem criar duplicatas.
-- [ ] Garantir que vendas nunca reduzam o estoque abaixo de zero.
+- [x] Criar um build reproduzivel com Maven e declarar o MySQL Connector.
+- [x] Documentar a execucao real do projeto no README.
+- [x] Validar entradas do menu, precos, quantidades, nomes e IDs.
+- [x] Fazer as operacoes de estoque retornarem sucesso ou erro.
+- [x] Corrigir compras para aumentar o estoque do produto existente, sem criar duplicatas.
+- [x] Garantir que vendas nunca reduzam o estoque abaixo de zero.
 - [ ] Usar transacoes nas operacoes de compra e venda.
 
 ## Fase 2 - Dados e seguranca (prioridade alta)
