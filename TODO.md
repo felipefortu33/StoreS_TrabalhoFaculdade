@@ -34,7 +34,7 @@
 
 ## Fase 4 - Evolucao (prioridade baixa)
 
-- [ ] Corrigir a documentacao para refletir a aplicacao existente.
+- [x] Corrigir a documentacao para refletir a aplicacao existente.
 - [ ] Criar relatorios e indicadores de estoque e vendas.
 - [ ] Avaliar uma interface web ou desktop depois que o dominio estiver estavel.
 - [ ] Avaliar API REST, Docker e frontend somente apos definir o novo escopo.

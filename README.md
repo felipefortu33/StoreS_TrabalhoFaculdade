@@ -12,7 +12,9 @@ O StoreS permite autenticar um usuario e executar operacoes basicas de estoque p
 
 ### 🔹 Funcionalidades Principais:
 - 📦 **Cadastro e gerenciamento de produtos**
+- 🏷️ **Controle de SKU, categoria e estoque mínimo**
 - 🛒 **Registro de vendas e baixa de estoque**
+- 📚 **Histórico de movimentações de estoque**
 - 🔍 **Busca de produtos por nome ou ID**
 - 📥 **Compra e reposicao de estoque**
 
@@ -51,6 +53,9 @@ mvn clean package
 
 # Execute o sistema pelo Maven
 mvn exec:java
+
+# Execute os testes automatizados
+mvn test
 ```
 
 Antes de executar, crie o banco `stores` e importe os scripts em `StoreS_SQL/`.
