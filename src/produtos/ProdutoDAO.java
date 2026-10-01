@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BancoDeDados.DBConnection;
+import BancoDeDados.DataAccessException;
 
 public class ProdutoDAO {
 
@@ -26,8 +27,7 @@ public class ProdutoDAO {
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new DataAccessException("Nao foi possivel cadastrar o produto.", e);
         }
     }
 
@@ -50,7 +50,7 @@ public class ProdutoDAO {
                 produtos.add(produto);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataAccessException("Nao foi possivel listar os produtos.", e);
         }
         return produtos;
     }
@@ -70,8 +70,7 @@ public class ProdutoDAO {
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new DataAccessException("Nao foi possivel editar o produto.", e);
         }
     }
 
@@ -87,8 +86,7 @@ public class ProdutoDAO {
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new DataAccessException("Nao foi possivel remover o produto.", e);
         }
     }
 
@@ -112,7 +110,7 @@ public class ProdutoDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataAccessException("Nao foi possivel buscar o produto.", e);
         }
         return produto;
     }
@@ -137,7 +135,7 @@ public class ProdutoDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataAccessException("Nao foi possivel buscar o produto.", e);
         }
         return produto;
     }
@@ -171,8 +169,7 @@ public class ProdutoDAO {
 
         } catch (SQLException e) {
             rollback(conn);
-            e.printStackTrace();
-            return false;
+            throw new DataAccessException("Nao foi possivel registrar a venda.", e);
         } finally {
             close(conn);
         }
@@ -204,8 +201,7 @@ public class ProdutoDAO {
             }
         } catch (SQLException e) {
             rollback(conn);
-            e.printStackTrace();
-            return false;
+            throw new DataAccessException("Nao foi possivel registrar a compra.", e);
         } finally {
             close(conn);
         }

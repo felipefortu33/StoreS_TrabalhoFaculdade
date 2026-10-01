@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 
+import BancoDeDados.DataAccessException;
 import Login.LoginController;
 import Login.Usuario;
 import produtos.Produto;
@@ -26,7 +27,14 @@ public class Main {
         System.out.print("Digite sua senha: ");
         String senha = scanner.nextLine();
 
-        Usuario usuarioAutenticado = loginController.autenticar(usuario, senha);
+        Usuario usuarioAutenticado;
+        try {
+            usuarioAutenticado = loginController.autenticar(usuario, senha);
+        } catch (DataAccessException exception) {
+            System.out.println("Erro ao acessar o banco de dados: " + exception.getMessage());
+            scanner.close();
+            return;
+        }
 
         if (usuarioAutenticado == null) {
             System.out.println("Falha no login. Encerrando o programa.");
@@ -49,7 +57,8 @@ public class Main {
             System.out.println("0. Sair");
             opcao = lerInteiro(scanner, "Escolha uma opção: ", 0);
 
-            switch (opcao) {
+            try {
+                switch (opcao) {
                 case 1:
                     // Cadastro de Produto Manualmente
                     if (!usuarioAutenticado.isAdmin()) {
@@ -165,6 +174,9 @@ public class Main {
 
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
+                }
+            } catch (DataAccessException exception) {
+                System.out.println("Erro ao acessar o banco de dados: " + exception.getMessage());
             }
 
         } while (opcao != 0);

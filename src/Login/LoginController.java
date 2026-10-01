@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import BancoDeDados.DBConnection;
+import BancoDeDados.DataAccessException;
 
 public class LoginController {
     public Usuario autenticar(String nomeUsuario, String senha) {
@@ -23,7 +24,7 @@ public class LoginController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataAccessException("Nao foi possivel autenticar o usuario.", e);
         }
         return null;
     }

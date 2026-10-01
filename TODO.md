@@ -28,7 +28,7 @@
 - [ ] Adicionar testes para login, estoque, compras e vendas.
 - [x] Adicionar testes unitarios para o hash de senha.
 - [x] Adicionar testes unitarios para as regras de compra e venda.
-- [ ] Padronizar tratamento de erros e mensagens para o usuario.
+- [x] Padronizar tratamento de erros e mensagens para o usuario.
 - [x] Fazer os CRUDs de produtos retornarem sucesso ou falha para o menu.
 - [ ] Adicionar codigo/SKU, categoria e estoque minimo aos produtos.
 
