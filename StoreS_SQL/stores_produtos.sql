@@ -27,7 +27,10 @@ CREATE TABLE `produtos` (
   `nome_produto` varchar(100) NOT NULL,
   `preco` decimal(10,2) NOT NULL,
   `quantidade` int NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_produtos_nome` (`nome_produto`),
+  CONSTRAINT `chk_produtos_preco` CHECK (`preco` >= 0),
+  CONSTRAINT `chk_produtos_quantidade` CHECK (`quantidade` >= 0)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -43,7 +46,9 @@ CREATE TABLE `movimentacoes_estoque` (
   PRIMARY KEY (`id`),
   KEY `idx_movimentacoes_produto_data` (`produto_id`, `criado_em`),
   CONSTRAINT `fk_movimentacoes_produto` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`),
-  CONSTRAINT `chk_movimentacoes_quantidade` CHECK (`quantidade` > 0)
+  CONSTRAINT `chk_movimentacoes_quantidade` CHECK (`quantidade` > 0),
+  CONSTRAINT `chk_movimentacoes_preco` CHECK (`preco_unitario` >= 0),
+  CONSTRAINT `chk_movimentacoes_valor` CHECK (`valor_total` >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --

@@ -27,7 +27,8 @@ CREATE TABLE `usuarios` (
   `nome_usuario` varchar(50) NOT NULL,
   `senha` varchar(255) NOT NULL,
   `nivel_acesso` enum('ADMIN','USER') NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_usuarios_nome` (`nome_usuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
