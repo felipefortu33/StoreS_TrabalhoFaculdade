@@ -24,13 +24,19 @@ DROP TABLE IF EXISTS `produtos`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `produtos` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `codigo_produto` varchar(50) DEFAULT NULL,
   `nome_produto` varchar(100) NOT NULL,
   `preco` decimal(10,2) NOT NULL,
   `quantidade` int NOT NULL,
+  `categoria` varchar(80) NOT NULL DEFAULT 'GERAL',
+  `estoque_minimo` int NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_produtos_codigo` (`codigo_produto`),
   KEY `idx_produtos_nome` (`nome_produto`),
+  KEY `idx_produtos_categoria` (`categoria`),
   CONSTRAINT `chk_produtos_preco` CHECK (`preco` >= 0),
-  CONSTRAINT `chk_produtos_quantidade` CHECK (`quantidade` >= 0)
+  CONSTRAINT `chk_produtos_quantidade` CHECK (`quantidade` >= 0),
+  CONSTRAINT `chk_produtos_estoque_minimo` CHECK (`estoque_minimo` >= 0)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

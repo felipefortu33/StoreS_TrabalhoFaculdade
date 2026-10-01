@@ -65,11 +65,15 @@ public class Main {
                         System.out.println("Acesso permitido somente para administradores.");
                         break;
                     }
+                    String codigoProduto = lerTexto(scanner, "SKU do produto: ");
                     String nomeProduto = lerTexto(scanner, "Nome do produto: ");
                     BigDecimal preco = lerDecimal(scanner, "Preço do produto: ", BigDecimal.valueOf(0.01));
                     int quantidade = lerInteiro(scanner, "Quantidade do produto: ", 0);
+                    String categoria = lerTexto(scanner, "Categoria do produto: ");
+                    int estoqueMinimo = lerInteiro(scanner, "Estoque mínimo: ", 0);
 
-                    Produto produto = new Produto(nomeProduto, preco, quantidade);
+                    Produto produto = new Produto(codigoProduto, nomeProduto, preco,
+                        quantidade, categoria, estoqueMinimo);
                     System.out.println(produtoDAO.cadastrarProduto(produto)
                         ? "Produto cadastrado com sucesso!"
                         : "Não foi possível cadastrar o produto.");
@@ -85,9 +89,12 @@ public class Main {
                     } else {
                         for (Produto p : produtos) {
                             System.out.println("ID: " + p.getId() +
+                                               ", SKU: " + p.getCodigo() +
                                                ", Nome: " + p.getNome() +
                                                ", Preço: " + p.getPreco() +
-                                               ", Quantidade: " + p.getQuantidade());
+                                               ", Quantidade: " + p.getQuantidade() +
+                                               ", Categoria: " + p.getCategoria() +
+                                               ", Estoque mínimo: " + p.getEstoqueMinimo());
                         }
                     }
                     break;
@@ -99,11 +106,15 @@ public class Main {
                         break;
                     }
                     int idEditar = lerInteiro(scanner, "Digite o ID do produto a ser editado: ", 1);
+                    String novoCodigo = lerTexto(scanner, "Novo SKU do produto: ");
                     String novoNome = lerTexto(scanner, "Novo nome do produto: ");
                     BigDecimal novoPreco = lerDecimal(scanner, "Novo preço do produto: ", BigDecimal.valueOf(0.01));
                     int novaQuantidade = lerInteiro(scanner, "Nova quantidade do produto: ", 0);
+                    String novaCategoria = lerTexto(scanner, "Nova categoria do produto: ");
+                    int novoEstoqueMinimo = lerInteiro(scanner, "Novo estoque mínimo: ", 0);
 
-                    Produto produtoEditado = new Produto(novoNome, novoPreco, novaQuantidade);
+                    Produto produtoEditado = new Produto(novoCodigo, novoNome, novoPreco,
+                        novaQuantidade, novaCategoria, novoEstoqueMinimo);
                     produtoEditado.setId(idEditar);
                     System.out.println(produtoDAO.editarProduto(produtoEditado)
                         ? "Produto atualizado com sucesso!"

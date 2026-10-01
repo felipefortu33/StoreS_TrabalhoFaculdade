@@ -16,14 +16,19 @@ public class ProdutoDAO {
 
     // Método para cadastrar um produto no banco de dados
     public boolean cadastrarProduto(Produto produto) {
-        String sql = "INSERT INTO produtos (nome_produto, preco, quantidade) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO produtos "
+               + "(codigo_produto, nome_produto, preco, quantidade, categoria, estoque_minimo) "
+               + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, produto.getNome());
-            stmt.setBigDecimal(2, produto.getPreco());
-            stmt.setInt(3, produto.getQuantidade());
+            stmt.setString(1, produto.getCodigo());
+            stmt.setString(2, produto.getNome());
+            stmt.setBigDecimal(3, produto.getPreco());
+            stmt.setInt(4, produto.getQuantidade());
+            stmt.setString(5, produto.getCategoria());
+            stmt.setInt(6, produto.getEstoqueMinimo());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -41,13 +46,7 @@ public class ProdutoDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Produto produto = new Produto(
-                    rs.getString("nome_produto"),
-                    rs.getBigDecimal("preco"),
-                    rs.getInt("quantidade")
-                );
-                produto.setId(rs.getInt("id"));
-                produtos.add(produto);
+                produtos.add(lerProduto(rs));
             }
         } catch (SQLException e) {
             throw new DataAccessException("Nao foi possivel listar os produtos.", e);
@@ -57,15 +56,19 @@ public class ProdutoDAO {
 
     // Método para editar um produto no banco de dados
     public boolean editarProduto(Produto produto) {
-        String sql = "UPDATE produtos SET nome_produto = ?, preco = ?, quantidade = ? WHERE id = ?";
+        String sql = "UPDATE produtos SET codigo_produto = ?, nome_produto = ?, "
+               + "preco = ?, quantidade = ?, categoria = ?, estoque_minimo = ? WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, produto.getNome());
-            stmt.setBigDecimal(2, produto.getPreco());
-            stmt.setInt(3, produto.getQuantidade());
-            stmt.setInt(4, produto.getId());
+            stmt.setString(1, produto.getCodigo());
+            stmt.setString(2, produto.getNome());
+            stmt.setBigDecimal(3, produto.getPreco());
+            stmt.setInt(4, produto.getQuantidade());
+            stmt.setString(5, produto.getCategoria());
+            stmt.setInt(6, produto.getEstoqueMinimo());
+            stmt.setInt(7, produto.getId());
 
             return stmt.executeUpdate() > 0;
 
@@ -101,12 +104,7 @@ public class ProdutoDAO {
             stmt.setString(1, nome);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    produto = new Produto(
-                        rs.getString("nome_produto"),
-                        rs.getBigDecimal("preco"),
-                        rs.getInt("quantidade")
-                    );
-                    produto.setId(rs.getInt("id"));
+                    produto = lerProduto(rs);
                 }
             }
         } catch (SQLException e) {
@@ -126,12 +124,7 @@ public class ProdutoDAO {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    produto = new Produto(
-                        rs.getString("nome_produto"),
-                        rs.getBigDecimal("preco"),
-                        rs.getInt("quantidade")
-                    );
-                    produto.setId(rs.getInt("id"));
+                    produto = lerProduto(rs);
                 }
             }
         } catch (SQLException e) {
@@ -225,6 +218,19 @@ public class ProdutoDAO {
                 // A operacao ja foi concluida ou desfeita.
             }
         }
+    }
+
+    private Produto lerProduto(ResultSet rs) throws SQLException {
+        Produto produto = new Produto(
+            rs.getString("codigo_produto"),
+            rs.getString("nome_produto"),
+            rs.getBigDecimal("preco"),
+            rs.getInt("quantidade"),
+            rs.getString("categoria"),
+            rs.getInt("estoque_minimo")
+        );
+        produto.setId(rs.getInt("id"));
+        return produto;
     }
 
     private void registrarMovimentacao(Connection conn, int produtoId, String tipo,
