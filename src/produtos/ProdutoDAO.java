@@ -14,7 +14,7 @@ import BancoDeDados.DBConnection;
 public class ProdutoDAO {
 
     // Método para cadastrar um produto no banco de dados
-    public void cadastrarProduto(Produto produto) {
+    public boolean cadastrarProduto(Produto produto) {
         String sql = "INSERT INTO produtos (nome_produto, preco, quantidade) VALUES (?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
@@ -24,10 +24,10 @@ public class ProdutoDAO {
             stmt.setBigDecimal(2, produto.getPreco());
             stmt.setInt(3, produto.getQuantidade());
 
-            stmt.executeUpdate();
-            System.out.println("Produto cadastrado com sucesso!");
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -56,7 +56,7 @@ public class ProdutoDAO {
     }
 
     // Método para editar um produto no banco de dados
-    public void editarProduto(Produto produto) {
+    public boolean editarProduto(Produto produto) {
         String sql = "UPDATE produtos SET nome_produto = ?, preco = ?, quantidade = ? WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -67,20 +67,16 @@ public class ProdutoDAO {
             stmt.setInt(3, produto.getQuantidade());
             stmt.setInt(4, produto.getId());
 
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Produto atualizado com sucesso!");
-            } else {
-                System.out.println("Produto não encontrado.");
-            }
+            return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
     // Método para remover um produto do banco de dados
-    public void removerProduto(int id) {
+    public boolean removerProduto(int id) {
         String sql = "DELETE FROM produtos WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -88,15 +84,11 @@ public class ProdutoDAO {
 
             stmt.setInt(1, id);
 
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Produto removido com sucesso!");
-            } else {
-                System.out.println("Produto não encontrado.");
-            }
+            return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

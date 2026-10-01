@@ -61,8 +61,9 @@ public class Main {
                     int quantidade = lerInteiro(scanner, "Quantidade do produto: ", 0);
 
                     Produto produto = new Produto(nomeProduto, preco, quantidade);
-                    produtoDAO.cadastrarProduto(produto);
-                    System.out.println("Produto cadastrado com sucesso!");
+                    System.out.println(produtoDAO.cadastrarProduto(produto)
+                        ? "Produto cadastrado com sucesso!"
+                        : "Não foi possível cadastrar o produto.");
                     break;
 
                 case 2:
@@ -95,7 +96,9 @@ public class Main {
 
                     Produto produtoEditado = new Produto(novoNome, novoPreco, novaQuantidade);
                     produtoEditado.setId(idEditar);
-                    produtoDAO.editarProduto(produtoEditado);
+                    System.out.println(produtoDAO.editarProduto(produtoEditado)
+                        ? "Produto atualizado com sucesso!"
+                        : "Produto não encontrado ou não foi possível atualizá-lo.");
                     break;
 
                 case 4:
@@ -105,7 +108,9 @@ public class Main {
                         break;
                     }
                     int idRemover = lerInteiro(scanner, "Digite o ID do produto a ser removido: ", 1);
-                    produtoDAO.removerProduto(idRemover);
+                    System.out.println(produtoDAO.removerProduto(idRemover)
+                        ? "Produto removido com sucesso!"
+                        : "Produto não encontrado ou não foi possível removê-lo.");
                     break;
 
                 case 5:
