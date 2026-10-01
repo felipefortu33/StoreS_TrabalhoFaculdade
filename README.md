@@ -59,6 +59,13 @@ O acesso deve ser configurado pelas variaveis `STORES_DB_USER` e
 `STORES_DB_URL` ou pelas propriedades Java `stores.db.url`, `stores.db.user` e
 `stores.db.password`.
 
+O script de usuarios nao cria uma conta padrao. Para criar o primeiro
+administrador, configure `STORES_ADMIN_USER` e `STORES_ADMIN_PASSWORD` e execute:
+
+```bash
+mvn exec:java -Dexec.mainClass=main.SetupAdmin
+```
+
 ---
 
 ## 📂 Estrutura do Repositório

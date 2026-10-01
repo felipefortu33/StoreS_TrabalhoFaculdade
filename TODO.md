@@ -15,7 +15,7 @@
 
 ## Fase 2 - Dados e seguranca (prioridade alta)
 
-- [ ] Remover credenciais de desenvolvimento dos scripts versionados.
+- [x] Remover credenciais de desenvolvimento dos scripts versionados.
 - [x] Armazenar senhas com hash seguro.
 - [x] Registrar compras, vendas e movimentacoes de estoque no banco.
 - [x] Aplicar o nivel de acesso `ADMIN` ou `USER` nas operacoes.

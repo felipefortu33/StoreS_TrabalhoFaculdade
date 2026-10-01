@@ -8,7 +8,7 @@ import java.util.Base64;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-final class PasswordHasher {
+public final class PasswordHasher {
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
     private static final int ITERATIONS = 120000;
     private static final int SALT_BYTES = 16;
@@ -17,14 +17,14 @@ final class PasswordHasher {
     private PasswordHasher() {
     }
 
-    static String hash(String password) {
+    public static String hash(String password) {
         byte[] salt = new byte[SALT_BYTES];
         new SecureRandom().nextBytes(salt);
         byte[] hash = derive(password, salt, ITERATIONS);
         return ITERATIONS + ":" + encode(salt) + ":" + encode(hash);
     }
 
-    static boolean matches(String password, String storedHash) {
+    public static boolean matches(String password, String storedHash) {
         String[] parts = storedHash == null ? new String[0] : storedHash.split(":", -1);
         if (parts.length != 3) {
             return false;
